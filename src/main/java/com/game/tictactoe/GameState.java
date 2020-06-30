@@ -5,6 +5,9 @@ import com.game.pattern.HorizontalPattern;
 import com.game.pattern.TopLeftToBottomRightPattern;
 import com.game.pattern.VerticalPattern;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class GameState implements IGameState {
     private final GameBoard gameBoard;
     private Player currentPlayer;
@@ -18,6 +21,24 @@ public class GameState implements IGameState {
     public GameState(GameBoard gameBoard, Player currentPlayer) {
         this.gameBoard = gameBoard;
         this.currentPlayer = currentPlayer;
+    }
+
+    public GameState(GameState other) {
+        this.gameBoard = new GameBoard(other.gameBoard);
+        this.currentPlayer = other.getCurrentPlayer();
+        this.lastMove = other.lastMove;
+    }
+
+    @Override
+    public List<GameState> availableStatesForAIPlayer() {
+        List<GameState> availableStates = new ArrayList<>();
+        for (Cell spot : gameBoard.getAvailableSpots()) {
+            GameState newState = new GameState(this);
+            newState.play(spot.getRow(), spot.getCol());
+            newState.switchPlayer();
+            availableStates.add(newState);
+        }
+        return availableStates;
     }
 
     public Player getCurrentPlayer() {

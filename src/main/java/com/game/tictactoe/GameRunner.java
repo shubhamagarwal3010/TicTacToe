@@ -1,5 +1,7 @@
 package com.game.tictactoe;
 
+import com.game.ai.IComputerPlayer;
+
 import java.io.PrintStream;
 import java.util.Scanner;
 
@@ -11,12 +13,14 @@ public class GameRunner {
     private final GameState gameState;
 
     private final BoardPrinter boardPrinter;
+    private final IComputerPlayer computerPlayer;
     private final Scanner scanner;
     private final PrintStream printStream;
 
-    public GameRunner(Scanner scanner, PrintStream printStream, int boardSize, Player startingPlayer) {
+    public GameRunner(IComputerPlayer computerPlayer, Scanner scanner, PrintStream printStream, int boardSize, Player startingPlayer) {
         this.gameState = new GameState(boardSize, startingPlayer);
         this.boardPrinter = new BoardPrinter(printStream);
+        this.computerPlayer = computerPlayer;
         this.scanner = scanner;
         this.printStream = printStream;
     }
@@ -46,6 +50,13 @@ public class GameRunner {
     }
 
     void moveComputer() {
+        GameState bestMove = computerPlayer.evaluateBestMove(gameState);
+        if (bestMove == null) {
+            return;
+        }
+        Cell nextMove = bestMove.getLastMove();
+        gameState.play(nextMove.getRow(), nextMove.getCol());
+        gameState.switchPlayer();
     }
 
     public void choosePlayerType() {

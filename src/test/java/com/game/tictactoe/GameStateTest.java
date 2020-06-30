@@ -5,6 +5,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -22,6 +24,47 @@ public class GameStateTest {
     @Test
     public void startingPlayerIsX() {
         assertEquals(new GameState(3, Player.X).getCurrentPlayer(), Player.X);
+    }
+
+    @Test
+    public void getAvailableStatesEmptyBoard() {
+        GameState game = new GameState(3, Player.X);
+        assertEquals(game.availableStatesForAIPlayer().size(), 9);
+    }
+
+    @Test
+    public void getAvailableStatesLastOne() {
+        GameState game = new GameState(3, Player.X);
+        game.play(0, 0);
+        game.play(0, 1);
+        game.play(0, 2);
+        game.play(1, 0);
+        game.play(1, 1);
+        game.play(1, 2);
+        game.play(2, 0);
+        game.play(2, 1);
+
+        List<GameState> states = game.availableStatesForAIPlayer();
+        assertEquals(states.size(), 1);
+        GameState availableState = states.get(0);
+        assertEquals(availableState.getCurrentPlayer(), Player.getNextPlayer(game.getCurrentPlayer()));
+        assertEquals(availableState.getLastMove(), new Cell(2, 2));
+    }
+
+    @Test
+    public void getAvailableStatesCompleteBoard() {
+        GameState game = new GameState(3, Player.X);
+        game.play(0, 0);
+        game.play(0, 1);
+        game.play(0, 2);
+        game.play(1, 0);
+        game.play(1, 1);
+        game.play(1, 2);
+        game.play(2, 0);
+        game.play(2, 1);
+        game.play(2, 2);
+
+        assertTrue(game.availableStatesForAIPlayer().isEmpty());
     }
 
     @Test

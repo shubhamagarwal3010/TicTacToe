@@ -6,3 +6,4 @@ A simple Tic-Tac-Toe Game written in java.
 ### Features
 
 * Human vs Human
+* Human vs Computer
