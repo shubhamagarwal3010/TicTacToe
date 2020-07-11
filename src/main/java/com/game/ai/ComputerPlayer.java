@@ -66,7 +66,8 @@ public class ComputerPlayer implements IComputerPlayer {
     }
 
     private List<GameState> getMiniMaxGameGameStatesInDescendingOrder(GameState currentState) {
-        Node root = minimax(currentState, true, Integer.MIN_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE);
+        int maximumDepthForOptimalTime = 10;
+        Node root = minimax(currentState, true, Integer.MIN_VALUE, Integer.MAX_VALUE, maximumDepthForOptimalTime);
         Comparator<Node> compareById = Comparator.comparingInt(Node::getBestScore).reversed();
         root.children.sort(compareById);
         return root.children.stream().map(child -> child.state).collect(Collectors.toList());
