@@ -4,6 +4,8 @@ import com.game.tictactoe.GameState;
 
 public interface IComputerPlayer {
 
-    GameState evaluateBestMove(GameState currentState);
+    void setGameLevel(GameLevel gameLevel);
+
+    GameState evaluateAIMove(GameState currentState);
 
 }

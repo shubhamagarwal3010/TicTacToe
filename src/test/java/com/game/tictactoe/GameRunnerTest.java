@@ -32,6 +32,23 @@ public class GameRunnerTest {
     }
 
     @Test
+    public void selectGameLevelContinuesToAcceptInputUntilValid() {
+        Scanner scanner = scannerWithInputs("", " 10", "invalid", " 6", "3", "1");
+        GameRunner runner = new GameRunner(aiPlayer, scanner, printStream, 3, Player.X);
+        runner.selectGameLevel();
+        verify(printStream, times(5)).println("Choose game level. Enter BEGINNER(1), INTERMEDIATE(2), EXPERT(3)");
+    }
+
+    @Test
+    public void selectGameLevelThrowsExceptionIfLevelDoesNotExist() {
+        Scanner scanner = scannerWithInputs("4", "1");
+        GameRunner runner = new GameRunner(aiPlayer, scanner, printStream, 3, Player.X);
+        runner.selectGameLevel();
+
+        verify(printStream, times(1)).println("Not a valid game level.");
+    }
+
+    @Test
     public void moveHumanErrorWhenOffBoard() {
         Scanner scanner = scannerWithInputs("-1,0", "3,3", "0,0");
         GameRunner runner = new GameRunner(aiPlayer, scanner, printStream, 3, Player.X);
@@ -70,7 +87,7 @@ public class GameRunnerTest {
         GameRunner runner = new GameRunner(aiPlayer, new Scanner(""), printStream, 3, Player.X);
         GameState nextState = mock(GameState.class);
         when(nextState.getLastMove()).thenReturn(new Cell(0, 0));
-        when(aiPlayer.evaluateBestMove(Mockito.any(GameState.class))).thenReturn(nextState);
+        when(aiPlayer.evaluateAIMove(Mockito.any(GameState.class))).thenReturn(nextState);
 
         assertEquals(runner.getGameState().getCurrentPlayer(), Player.X);
         runner.moveComputer();

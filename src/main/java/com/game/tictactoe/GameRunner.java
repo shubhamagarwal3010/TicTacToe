@@ -1,9 +1,12 @@
 package com.game.tictactoe;
 
+import com.game.ai.GameLevel;
 import com.game.ai.IComputerPlayer;
 
 import java.io.PrintStream;
 import java.util.Scanner;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class GameRunner {
 
@@ -26,6 +29,7 @@ public class GameRunner {
     }
 
     public void playWithComputer() {
+        selectGameLevel();
         showGameInstruction();
         while (!gameState.isOver()) {
             moveHuman(gameState.getCurrentPlayer());
@@ -50,7 +54,7 @@ public class GameRunner {
     }
 
     void moveComputer() {
-        GameState bestMove = computerPlayer.evaluateBestMove(gameState);
+        GameState bestMove = computerPlayer.evaluateAIMove(gameState);
         if (bestMove == null) {
             return;
         }
@@ -64,7 +68,7 @@ public class GameRunner {
         while (true) {
             do {
                 showChoosePlayerInstruction();
-                playerType = parsePlayerType(scanner.nextLine());
+                playerType = parseIntegerInput(scanner.nextLine());
             } while (playerType == 0);
             if (playerType == 1) {
                 playWithHuman();
@@ -72,6 +76,22 @@ public class GameRunner {
             } else if (playerType == 2) {
                 playWithComputer();
                 return;
+            }
+        }
+    }
+
+    public void selectGameLevel() {
+        int gameLevel;
+        while (true) {
+            do {
+                showChooseGameLevelInstruction();
+                gameLevel = parseIntegerInput(scanner.nextLine());
+            } while (gameLevel == 0);
+            try {
+                computerPlayer.setGameLevel(GameLevel.getLevel(gameLevel));
+                return;
+            } catch (IllegalArgumentException e) {
+                printStream.println(e.getMessage());
             }
         }
     }
@@ -125,12 +145,12 @@ public class GameRunner {
         }
     }
 
-    private int parsePlayerType(String playerType) {
-        if (playerType.trim().length() != 1) {
+    private int parseIntegerInput(String input) {
+        if (input.trim().length() != 1) {
             return 0;
         }
         try {
-            return Integer.parseInt(playerType.trim());
+            return Integer.parseInt(input.trim());
         } catch (NumberFormatException e) {
             return 0;
         }
@@ -138,6 +158,12 @@ public class GameRunner {
 
     private void showChoosePlayerInstruction() {
         printStream.println(CHOOSE_PLAYER_INSTRUCTION);
+    }
+
+    public void showChooseGameLevelInstruction() {
+        String gameLevelInstruction = "Choose game level. Enter ";
+        gameLevelInstruction += Stream.of(GameLevel.values()).map(GameLevel::toString).collect(Collectors.joining(", "));
+        printStream.println(gameLevelInstruction);
     }
 
     private void showGameInstruction() {
