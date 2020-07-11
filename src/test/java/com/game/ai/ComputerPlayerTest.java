@@ -8,8 +8,10 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.junit.runner.JUnitCore;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.powermock.api.easymock.PowerMock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -26,62 +28,9 @@ import static org.mockito.Mockito.when;
 @PrepareForTest(ComputerPlayer.class)
 public class ComputerPlayerTest {
 
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
-    private ComputerPlayer aiPlayer;
-    @Mock
-    private GameEvaluator evaluator;
-    @Mock
-    private GameState gameState;
-
-    @Before
-    public void setup() {
-        aiPlayer = new ComputerPlayer(evaluator);
-    }
-
-    // choose winning move
     @Test
-    public void preferWinningState() {
-        GameState winState = mock(GameState.class);
-        GameState drawState = mock(GameState.class);
-        when(winState.isOver()).thenReturn(true);
-        when(drawState.isOver()).thenReturn(true);
-        when(evaluator.evaluateGameScore(winState)).thenReturn(100);
-        when(evaluator.evaluateGameScore(drawState)).thenReturn(0);
-        when(gameState.availableStatesForNextPlayer()).thenReturn(Arrays.asList(winState, drawState));
-
-        GameState actualState = aiPlayer.evaluateAIMove(gameState);
-        assertEquals(actualState, winState);
-    }
-
-    //     prevent loss. this is essentially the same as above...
-    @Test
-    public void preventLosingMove() {
-        GameState loseState = mock(GameState.class);
-        GameState drawState = mock(GameState.class);
-        when(loseState.isOver()).thenReturn(true);
-        when(drawState.isOver()).thenReturn(true);
-        when(evaluator.evaluateGameScore(loseState)).thenReturn(-1);
-        when(evaluator.evaluateGameScore(drawState)).thenReturn(0);
-        when(gameState.availableStatesForNextPlayer()).thenReturn(Arrays.asList(loseState, drawState));
-
-        GameState actualState = aiPlayer.evaluateAIMove(gameState);
-        assertEquals(actualState, drawState);
-    }
-
-    @Test
-    public void preferEarlyWin() {
-        GameBoard gameBoard = new GameBoard(3);
-
-        gameBoard.addSpot(0, 0, O);
-        gameBoard.addSpot(1, 0, O);
-        gameBoard.addSpot(1, 1, X);
-        gameBoard.addSpot(1, 2, X);
-        gameBoard.addSpot(2, 2, X);
-        GameState gameState = new GameState(gameBoard, O);
-        ComputerPlayer agent = new ComputerPlayer(new GameEvaluator(O));
-        GameState actualState = agent.evaluateAIMove(gameState);
-        assertTrue(actualState.hasWin(O));
+    public void subRunner() {
+        JUnitCore.runClasses(SubComputerPlayerTest.class);
     }
 
     @Test
@@ -143,11 +92,72 @@ public class ComputerPlayerTest {
         assertFalse(actualState.hasWin(O));
     }
 
-    // /game already over
-    @Test
-    public void evaluateGameAlreadyOver() {
-        when(gameState.isOver()).thenReturn(true);
-        assertNull(aiPlayer.evaluateAIMove(gameState));
-    }
+    @RunWith(MockitoJUnitRunner.StrictStubs.class)
+    public static class SubComputerPlayerTest {
 
+        @Rule
+        public ExpectedException thrown = ExpectedException.none();
+        private ComputerPlayer aiPlayer;
+        @Mock
+        private GameEvaluator evaluator;
+        @Mock
+        private GameState gameState;
+        // choose winning move
+
+        @Before
+        public void setup() {
+            aiPlayer = new ComputerPlayer(evaluator);
+        }
+
+        @Test
+        public void preferWinningState() {
+            GameState winState = mock(GameState.class);
+            GameState drawState = mock(GameState.class);
+            when(winState.isOver()).thenReturn(true);
+            when(drawState.isOver()).thenReturn(true);
+            when(evaluator.evaluateGameScore(winState)).thenReturn(100);
+            when(evaluator.evaluateGameScore(drawState)).thenReturn(0);
+            when(gameState.availableStatesForNextPlayer()).thenReturn(Arrays.asList(winState, drawState));
+
+            GameState actualState = aiPlayer.evaluateAIMove(gameState);
+            assertEquals(actualState, winState);
+        }
+
+        //     prevent loss. this is essentially the same as above...
+        @Test
+        public void preventLosingMove() {
+            GameState loseState = mock(GameState.class);
+            GameState drawState = mock(GameState.class);
+            when(loseState.isOver()).thenReturn(true);
+            when(drawState.isOver()).thenReturn(true);
+            when(evaluator.evaluateGameScore(loseState)).thenReturn(-1);
+            when(evaluator.evaluateGameScore(drawState)).thenReturn(0);
+            when(gameState.availableStatesForNextPlayer()).thenReturn(Arrays.asList(loseState, drawState));
+
+            GameState actualState = aiPlayer.evaluateAIMove(gameState);
+            assertEquals(actualState, drawState);
+        }
+
+        @Test
+        public void preferEarlyWin() {
+            GameBoard gameBoard = new GameBoard(3);
+
+            gameBoard.addSpot(0, 0, O);
+            gameBoard.addSpot(1, 0, O);
+            gameBoard.addSpot(1, 1, X);
+            gameBoard.addSpot(1, 2, X);
+            gameBoard.addSpot(2, 2, X);
+            GameState gameState = new GameState(gameBoard, O);
+            ComputerPlayer agent = new ComputerPlayer(new GameEvaluator(O));
+            GameState actualState = agent.evaluateAIMove(gameState);
+            assertTrue(actualState.hasWin(O));
+        }
+
+        // /game already over
+        @Test
+        public void evaluateGameAlreadyOver() {
+            when(gameState.isOver()).thenReturn(true);
+            assertNull(aiPlayer.evaluateAIMove(gameState));
+        }
+    }
 }
