@@ -1,6 +1,9 @@
 package com.game.tictactoe;
 
 import java.io.PrintStream;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class BoardPrinter {
 
@@ -15,16 +18,23 @@ public class BoardPrinter {
     }
 
     public void printGameBoard(GameBoard board) {
-        printRow(0, board);
-        printStream.println("-+-+-");
-        printRow(1, board);
-        printStream.println("-+-+-");
-        printRow(2, board);
+        IntStream.range(0, GameBoard.getSize()).forEach(i -> {
+            if (i < GameBoard.getSize() - 1) {
+                printRow(i, board);
+                lineSeparator();
+            } else {
+                printRow(i, board);
+            }
+        });
     }
 
     private void printRow(int row, GameBoard board) {
-        printStream.printf("%s|%s|%s\n", markToString(board.getSpot(row, 0)),
-                markToString(board.getSpot(row, 1)), markToString(board.getSpot(row, 2)));
+        List<String> spots = IntStream.range(0, GameBoard.getSize()).mapToObj(i -> markToString(board.getSpot(row, i))).collect(Collectors.toList());
+        printStream.print(String.join("|", spots) + "\n");
     }
 
+    private void lineSeparator() {
+        List<String> spots = IntStream.range(0, GameBoard.getSize()).mapToObj(i -> "-").collect(Collectors.toList());
+        printStream.println(String.join("+", spots));
+    }
 }

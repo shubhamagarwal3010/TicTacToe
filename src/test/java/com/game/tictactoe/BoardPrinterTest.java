@@ -32,11 +32,11 @@ public class BoardPrinterTest {
         printer.printGameBoard(board);
 
         InOrder inOrder = inOrder(printStream);
-        inOrder.verify(printStream).printf("%s|%s|%s\n", " ", " ", " ");
+        inOrder.verify(printStream).print(" | | \n");
         inOrder.verify(printStream).println("-+-+-");
-        inOrder.verify(printStream).printf("%s|%s|%s\n", " ", " ", " ");
+        inOrder.verify(printStream).print(" | | \n");
         inOrder.verify(printStream).println("-+-+-");
-        inOrder.verify(printStream).printf("%s|%s|%s\n", " ", " ", " ");
+        inOrder.verify(printStream).print(" | | \n");
     }
 
     @Test
@@ -54,10 +54,10 @@ public class BoardPrinterTest {
         printer.printGameBoard(gameBoard);
 
         InOrder inOrder = inOrder(printStream);
-        inOrder.verify(printStream).printf("%s|%s|%s\n", "O", "X", "O");
+        inOrder.verify(printStream).print("O|X|O\n");
         inOrder.verify(printStream).println("-+-+-");
-        inOrder.verify(printStream).printf("%s|%s|%s\n", "X", " ", "O");
+        inOrder.verify(printStream).print("X| |O\n");
         inOrder.verify(printStream).println("-+-+-");
-        inOrder.verify(printStream).printf("%s|%s|%s\n", "X", "O", "X");
+        inOrder.verify(printStream).print("X|O|X\n");
     }
 }
