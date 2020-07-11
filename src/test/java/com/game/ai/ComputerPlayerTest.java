@@ -1,7 +1,6 @@
 package com.game.ai;
 
 import com.game.tictactoe.GameBoard;
-import com.game.tictactoe.GameEvaluator;
 import com.game.tictactoe.GameState;
 import org.junit.Before;
 import org.junit.Rule;
@@ -42,9 +41,9 @@ public class ComputerPlayerTest {
         GameState drawState = mock(GameState.class);
         when(winState.isOver()).thenReturn(true);
         when(drawState.isOver()).thenReturn(true);
-        when(evaluator.evaluateAIPlayer(winState)).thenReturn(100);
-        when(evaluator.evaluateAIPlayer(drawState)).thenReturn(0);
-        when(gameState.availableStatesForAIPlayer()).thenReturn(Arrays.asList(winState, drawState));
+        when(evaluator.evaluateGameScore(winState)).thenReturn(100);
+        when(evaluator.evaluateGameScore(drawState)).thenReturn(0);
+        when(gameState.availableStatesForNextPlayer()).thenReturn(Arrays.asList(winState, drawState));
 
         GameState actualState = aiPlayer.evaluateBestMove(gameState);
         assertEquals(actualState, winState);
@@ -57,9 +56,9 @@ public class ComputerPlayerTest {
         GameState drawState = mock(GameState.class);
         when(loseState.isOver()).thenReturn(true);
         when(drawState.isOver()).thenReturn(true);
-        when(evaluator.evaluateAIPlayer(loseState)).thenReturn(-1);
-        when(evaluator.evaluateAIPlayer(drawState)).thenReturn(0);
-        when(gameState.availableStatesForAIPlayer()).thenReturn(Arrays.asList(loseState, drawState));
+        when(evaluator.evaluateGameScore(loseState)).thenReturn(-1);
+        when(evaluator.evaluateGameScore(drawState)).thenReturn(0);
+        when(gameState.availableStatesForNextPlayer()).thenReturn(Arrays.asList(loseState, drawState));
 
         GameState actualState = aiPlayer.evaluateBestMove(gameState);
         assertEquals(actualState, drawState);

@@ -29,7 +29,7 @@ public class GameStateTest {
     @Test
     public void getAvailableStatesEmptyBoard() {
         GameState game = new GameState(3, Player.X);
-        assertEquals(game.availableStatesForAIPlayer().size(), 9);
+        assertEquals(game.availableStatesForNextPlayer().size(), 9);
     }
 
     @Test
@@ -44,7 +44,7 @@ public class GameStateTest {
         game.play(2, 0);
         game.play(2, 1);
 
-        List<GameState> states = game.availableStatesForAIPlayer();
+        List<GameState> states = game.availableStatesForNextPlayer();
         assertEquals(states.size(), 1);
         GameState availableState = states.get(0);
         assertEquals(availableState.getCurrentPlayer(), Player.getNextPlayer(game.getCurrentPlayer()));
@@ -64,7 +64,7 @@ public class GameStateTest {
         game.play(2, 1);
         game.play(2, 2);
 
-        assertTrue(game.availableStatesForAIPlayer().isEmpty());
+        assertTrue(game.availableStatesForNextPlayer().isEmpty());
     }
 
     @Test

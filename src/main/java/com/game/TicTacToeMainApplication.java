@@ -1,8 +1,8 @@
 package com.game;
 
 import com.game.ai.ComputerPlayer;
+import com.game.ai.GameEvaluator;
 import com.game.ai.IComputerPlayer;
-import com.game.tictactoe.GameEvaluator;
 import com.game.tictactoe.GameRunner;
 import com.game.tictactoe.Player;
 

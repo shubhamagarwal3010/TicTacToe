@@ -30,7 +30,7 @@ public class GameState implements IGameState {
     }
 
     @Override
-    public List<GameState> availableStatesForAIPlayer() {
+    public List<GameState> availableStatesForNextPlayer() {
         List<GameState> availableStates = new ArrayList<>();
         for (Cell spot : gameBoard.getAvailableSpots()) {
             GameState newState = new GameState(this);

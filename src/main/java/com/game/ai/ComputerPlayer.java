@@ -1,6 +1,5 @@
 package com.game.ai;
 
-import com.game.tictactoe.GameEvaluator;
 import com.game.tictactoe.GameState;
 
 import java.util.ArrayList;
@@ -19,7 +18,7 @@ public class ComputerPlayer implements IComputerPlayer {
     public GameState evaluateBestMove(GameState currentState) {
         Node root = minimax(currentState, true, Integer.MIN_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE);
         for (Node child : root.children) {
-            if (child.value == root.value) {
+            if (child.bestScore == root.bestScore) {
                 return child.state;
             }
         }
@@ -30,33 +29,32 @@ public class ComputerPlayer implements IComputerPlayer {
     // the value of the board
     private Node minimax(GameState state, boolean isMaximizer, int maximizerBest, int minimizerBest, int depth) {
         Node current = new Node(state, maximizerBest, minimizerBest);
-        current.value = isMaximizer ? maximizerBest : minimizerBest;
+        current.bestScore = isMaximizer ? maximizerBest : minimizerBest;
         if (depth == 0 || state.isOver()) {
-            current.value = evaluator.evaluateAIPlayer(state);
-            current.maximizerBest = current.value;
-            current.minimizerBest = current.value;
+            current.bestScore = evaluator.evaluateGameScore(state);
+            current.maximizerBest = current.bestScore;
+            current.minimizerBest = current.bestScore;
             current.state = state;
             current.children = Collections.emptyList();
             return current;
-        } else {
-            ArrayList<Node> children = new ArrayList<>();
-            for (GameState nextState : state.availableStatesForAIPlayer()) {
-                Node child = minimax(nextState, !isMaximizer, current.maximizerBest, current.minimizerBest, depth - 1);
-                if (isMaximizer && child.value > current.value) {
-                    current.value = child.value;
-                    current.maximizerBest = child.value;
-                } else if (!isMaximizer && child.value < current.value) {
-                    current.value = child.value;
-                    current.minimizerBest = child.value;
-                }
-                // prune condition
-                if (current.maximizerBest >= current.minimizerBest) {
-                    break;
-                }
-                children.add(child);
-            }
-            current.children = children;
         }
+        ArrayList<Node> children = new ArrayList<>();
+        for (GameState nextState : state.availableStatesForNextPlayer()) {
+            Node child = minimax(nextState, !isMaximizer, current.maximizerBest, current.minimizerBest, depth - 1);
+            if (isMaximizer && child.bestScore > current.bestScore) {
+                current.bestScore = child.bestScore;
+                current.maximizerBest = child.bestScore;
+            } else if (!isMaximizer && child.bestScore < current.bestScore) {
+                current.bestScore = child.bestScore;
+                current.minimizerBest = child.bestScore;
+            }
+            // prune condition
+            if (current.maximizerBest >= current.minimizerBest) {
+                break;
+            }
+            children.add(child);
+        }
+        current.children = children;
         return current;
     }
 
@@ -64,7 +62,7 @@ public class ComputerPlayer implements IComputerPlayer {
         private GameState state;
         private int maximizerBest;
         private int minimizerBest;
-        private int value;
+        private int bestScore;
         private List<Node> children;
 
         public Node(GameState state, int maximizerBest, int minimizerBest) {

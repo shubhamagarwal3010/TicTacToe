@@ -1,4 +1,7 @@
-package com.game.tictactoe;
+package com.game.ai;
+
+import com.game.tictactoe.GameState;
+import com.game.tictactoe.Player;
 
 public class GameEvaluator {
 
@@ -8,9 +11,9 @@ public class GameEvaluator {
         this.player = player;
     }
 
-    public int evaluateAIPlayer(GameState game) {
+    public int evaluateGameScore(GameState game) {
         if (game.hasWin(player)) {
-            return game.availableStatesForAIPlayer().size() + 1;
+            return game.availableStatesForNextPlayer().size() + 1;
         } else if (game.hasWin(Player.getNextPlayer(player))) {
             return -1;
         } else {

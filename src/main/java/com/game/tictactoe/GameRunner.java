@@ -60,16 +60,16 @@ public class GameRunner {
     }
 
     public void choosePlayerType() {
-        int cell = 0;
+        int playerType;
         while (true) {
             do {
                 showChoosePlayerInstruction();
-                cell = parsePlayerType(scanner.nextLine());
-            } while (cell == 0);
-            if (cell == 1) {
+                playerType = parsePlayerType(scanner.nextLine());
+            } while (playerType == 0);
+            if (playerType == 1) {
                 playWithHuman();
                 return;
-            } else if (cell == 2) {
+            } else if (playerType == 2) {
                 playWithComputer();
                 return;
             }
