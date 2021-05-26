@@ -17,5 +17,7 @@ public class TicTacToeMainApplication {
         GameRunner game = new GameRunner(computerPlayer, inputScanner, System.out, 3, Player.X);
 
         game.choosePlayerType();
+
+        // temp
     }
 }
